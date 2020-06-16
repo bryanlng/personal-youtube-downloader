@@ -39,7 +39,7 @@ def convert_file_to_mp3(videoname, downloaded_filepath, converted_filepath):
 
 
 
-def get_title_of_youtube_video_bs4(url):
+def get_yt_title(url):
     """
         https://stackoverflow.com/questions/5041008/how-to-find-elements-by-class
         https://stackoverflow.com/questions/32754229/python-and-beautifulsoup-opening-pages
@@ -55,6 +55,15 @@ def get_title_of_youtube_video_bs4(url):
         print(e)
 
 
+def get_title_of_youtube_video_bs4(url):
+    title = None
+    found_title = False
+    while not found_title:
+        title = get_yt_title(url)
+        found_title = (title != "Youtube")      #If title of Youtube video == "Youtube", then there was an error, so try again
+
+    return title
+
 
 
 def download_youtube_video(url, convert_to_mp3=False):
@@ -63,11 +72,11 @@ def download_youtube_video(url, convert_to_mp3=False):
 
 
     #Download using Youtube-dl
-    dl_path = raw_downloads_folder + title + ".%(ext)s"
+    relative_dl_path = raw_downloads_folder + title + ".%(ext)s"
 
     video_has_downloaded = False
     while not video_has_downloaded:
-        video_has_downloaded = download_video_using_youtube_dl(title, url, dl_path)
+        video_has_downloaded = download_video_using_youtube_dl(title, url, relative_dl_path)
 
     #Convert to mp3 if option specified
     if convert_to_mp3:
@@ -90,17 +99,26 @@ def download_video_using_youtube_dl(title, url, path):
 
 
 
-def download_youtube_playlist(playlist_url):
+def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
     #Find title
     title = get_title_of_youtube_video_bs4(playlist_url)
 
     #Download using Youtube-dl
-    youtube_dl_path = raw_downloads_folder
+    relative_dl_path = raw_downloads_folder + title + "\\" + "%(playlist_index)s-%(title)s.%(ext)s"
+    print("Folder to download playlist into: ", relative_dl_path)
 
     video_has_downloaded = False
     while not video_has_downloaded:
-        video_has_downloaded = download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path)
+        video_has_downloaded = download_playlist_using_youtube_dl(title, playlist_url, relative_dl_path)
 
+
+    #Convert all to mp3 if option specified
+    """
+    if convert_all_to_mp3:
+        downloaded_filepath = root_dir + raw_downloads_folder + title + ".mp4"
+        converted_filepath = root_dir + converted_folder + title + ".mp3"
+        convert_file_to_mp3(title, downloaded_filepath, converted_filepath)
+    """
 
 
 def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
@@ -126,9 +144,9 @@ def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
 if __name__ == "__main__":
     #url = "https://www.youtube.com/watch?v=2XGYr9_BiEU"     #ep 1
     #url = "https://www.youtube.com/watch?v=9EceEemWo0k"     #ep 3
-    url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"     #test
+    #url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"     #test
     #url = "https://www.youtube.com/watch?v=lRXDeMBfvMk"
-    download_youtube_video(url, convert_to_mp3=True)
+    #download_youtube_video(url, convert_to_mp3=True)
 
-    #playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
-    #download_youtube_playlist(playlist_url)
+    playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
+    download_youtube_playlist(playlist_url)
