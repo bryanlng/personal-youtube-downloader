@@ -38,7 +38,7 @@ class TestYoutubeDownloader(unittest.TestCase):
 
 
 
-    #@unittest.skip("reason for skipping")
+    @unittest.skip("reason for skipping")
     def test_download_youtube_video_default(self):
         url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"
         video_has_downloaded = personal_youtube_downloader_with_gui.download_youtube_video(url)
@@ -53,7 +53,7 @@ class TestYoutubeDownloader(unittest.TestCase):
 
 
 
-    #@unittest.skip("reason for skipping")
+    @unittest.skip("reason for skipping")
     def test_download_youtube_video_also_convert_to_mp3(self):
         url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"
         video_has_downloaded = personal_youtube_downloader_with_gui.download_youtube_video(url, convert_to_mp3=True)
@@ -71,7 +71,7 @@ class TestYoutubeDownloader(unittest.TestCase):
 
 
 
-    @unittest.skip("reason for skipping")
+    #@unittest.skip("reason for skipping")
     def test_download_youtube_playlist_default(self):
         url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
         video_has_downloaded = personal_youtube_downloader_with_gui.download_youtube_playlist(url)
@@ -88,8 +88,7 @@ class TestYoutubeDownloader(unittest.TestCase):
         self.assertTrue(len(filenames) > 0)
 
         #Remove all videos
-        filepaths_to_delete = [correct_file_path + filename + ".mp4" for filename in filenames]
-        self.delete_videos_after_test(filepaths_to_delete)
+        self.delete_videos_after_test(delete_whole_directory=True, directories_to_delete = [correct_file_path])
 
 
 
@@ -122,10 +121,7 @@ class TestYoutubeDownloader(unittest.TestCase):
         self.assertEqual(download_filenames, converted_filenames)
 
         #Remove all videos
-        downloads_filepaths_to_delete = [correct_downloads_file_path + filename + ".mp4" for filename in download_filenames]
-        converted_filepaths_to_delete = [correct_converted_file_path + filename + ".mp3" for filename in converted_filenames]
-        filepaths_to_delete = downloads_filepaths_to_delete + converted_filepaths_to_delete
-        self.delete_videos_after_test(filepaths_to_delete)
+        self.delete_videos_after_test(delete_whole_directory=True, directories_to_delete = [correct_downloads_file_path, correct_converted_file_path])
 
 
 
