@@ -88,6 +88,8 @@ def download_youtube_video(url, convert_to_mp3=False):
         converted_filepath = root_dir + converted_folder + title + ".mp3"
         convert_file_to_mp3(title, downloaded_filepath, converted_filepath)
 
+    return video_has_downloaded
+
 
 def download_video_using_youtube_dl(title, url, path):
     print("Downloading video with title %s with url %s" % (title, url))
@@ -139,6 +141,7 @@ def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
             convert_file_to_mp3(title, downloaded_filepath, converted_filepath)
 
 
+    return video_has_downloaded
 
 def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
     """
@@ -157,6 +160,12 @@ def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
 
 
 
+
+def download(url, is_playlist=False, convert_to_mp3=False):
+    if is_playlist:
+        download_youtube_playlist(url, convert_all_to_mp3=convert_to_mp3)
+    else:
+        download_youtube_video(url, convert_to_mp3=convert_to_mp3)
 
 
 
