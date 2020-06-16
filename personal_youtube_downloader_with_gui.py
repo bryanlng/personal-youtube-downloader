@@ -26,12 +26,11 @@ from bs4 import BeautifulSoup
 
 #Directories
 root_dir = "C:\\Users\\Bryan Leung\\Desktop\\youtube_downloaders\\personal_youtube_downloader_with_gui\\"
-youtube_dl_path = root_dir
 raw_downloads_folder = "raw_downloads\\"
 converted_folder = "converted\\"
 
 
-def convert_to_mp3(videoname, downloaded_filepath, converted_filepath):
+def convert_file_to_mp3(videoname, downloaded_filepath, converted_filepath):
     print("Converting: ", videoname)
     print("downloaded_filepath: ", downloaded_filepath)
     print("converted_filepath: ", converted_filepath)
@@ -58,22 +57,23 @@ def get_title_of_youtube_video_bs4(url):
 
 
 
-def download_youtube_video(url):
+def download_youtube_video(url, convert_to_mp3=False):
     #Find title
     title = get_title_of_youtube_video_bs4(url)
 
 
     #Download using Youtube-dl
-    youtube_dl_path = raw_downloads_folder + title + ".%(ext)s"
+    dl_path = raw_downloads_folder + title + ".%(ext)s"
 
     video_has_downloaded = False
     while not video_has_downloaded:
-        video_has_downloaded = download_video_using_youtube_dl(title, url, youtube_dl_path)
+        video_has_downloaded = download_video_using_youtube_dl(title, url, dl_path)
 
-    downloaded_filepath = root_dir + raw_downloads_folder + videoname + ".mp4"
-    converted_filepath = root_dir + converted_folder + videoname + ".mp3"
-
-    convert_to_mp3(title, downloaded_filepath, converted_filepath)
+    #Convert to mp3 if option specified
+    if convert_to_mp3:
+        downloaded_filepath = root_dir + raw_downloads_folder + title + ".mp4"
+        converted_filepath = root_dir + converted_folder + title + ".mp3"
+        convert_file_to_mp3(title, downloaded_filepath, converted_filepath)
 
 
 def download_video_using_youtube_dl(title, url, path):
@@ -90,31 +90,30 @@ def download_video_using_youtube_dl(title, url, path):
 
 
 
-def download_youtube_playlist(playslist_url):
+def download_youtube_playlist(playlist_url):
     #Find title
-    title = get_title_of_youtube_video_bs4(playslist_url)
-
+    title = get_title_of_youtube_video_bs4(playlist_url)
 
     #Download using Youtube-dl
     youtube_dl_path = raw_downloads_folder
 
     video_has_downloaded = False
     while not video_has_downloaded:
-        video_has_downloaded = download_playlist_using_youtube_dl(title, playslist_url, youtube_dl_path)
+        video_has_downloaded = download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path)
 
 
 
-def download_playlist_using_youtube_dl(playlist_url):
+def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
     """
         https://stackoverflow.com/questions/48422377/youtube-downloading-a-playlist-youtube-dl
     """
-    print("Downloading youtube playlist with title %s with url %s" % (title, url))
+    print("Downloading youtube playlist with title %s with url %s" % (title, playlist_url))
     download_successful = True
     try:
-        subprocess.run(["youtube-dl", "--verbose", "-i", "-f", 'mp4', "--yes-playlist", playlist_url, "-o", path])
+        subprocess.run(["youtube-dl", "--verbose", "-i", "-f", 'mp4', "--yes-playlist", playlist_url, "-o", youtube_dl_path])
     except Exception as e:
         print(e)
-        print("\n\nFAIL: Downloading song %s with url %s" % (songname, url))
+        print("\n\nFAIL: Downloading song %s with url %s" % (songname, playlist_url))
         download_successful = False
 
     return download_successful
@@ -127,8 +126,9 @@ def download_playlist_using_youtube_dl(playlist_url):
 if __name__ == "__main__":
     #url = "https://www.youtube.com/watch?v=2XGYr9_BiEU"     #ep 1
     #url = "https://www.youtube.com/watch?v=9EceEemWo0k"     #ep 3
-    #url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"     #test
-    url = "https://www.youtube.com/watch?v=lRXDeMBfvMk"
-    download_youtube_video(url)
+    url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"     #test
+    #url = "https://www.youtube.com/watch?v=lRXDeMBfvMk"
+    download_youtube_video(url, convert_to_mp3=True)
 
-    #playlist_url =
+    #playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
+    #download_youtube_playlist(playlist_url)

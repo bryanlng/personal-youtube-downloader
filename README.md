@@ -7,7 +7,7 @@ Features so far:
 
 
 Upcoming features:
-3. Download entire youtube playlist (default format = mp4)
-4. Convert entire playlist to mp3
-5. GUI
-6. Queue multiple items at the same time
+1. Download entire youtube playlist (default format = mp4)
+2. Convert entire playlist to mp3
+3. GUI
+4. Queue multiple items at the same time
