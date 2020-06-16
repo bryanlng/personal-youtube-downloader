@@ -6,7 +6,10 @@ import os
 import sys
 import subprocess
 import json
+from os import listdir
+from os.path import isfile, join
 from bs4 import BeautifulSoup
+from pathlib import Path
 
 """
     Lots of code taken from youtube downloader and converter for levi project
@@ -60,7 +63,8 @@ def get_title_of_youtube_video_bs4(url):
     found_title = False
     while not found_title:
         title = get_yt_title(url)
-        found_title = (title != "Youtube")      #If title of Youtube video == "Youtube", then there was an error, so try again
+        print("Found title %s for url %s" % (title, url))
+        found_title = (title != "YouTube")      #If title of Youtube video == "Youtube", then there was an error, so try again
 
     return title
 
@@ -103,8 +107,12 @@ def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
     #Find title
     title = get_title_of_youtube_video_bs4(playlist_url)
 
-    #Download using Youtube-dl
-    relative_dl_path = raw_downloads_folder + title + "\\" + "%(playlist_index)s-%(title)s.%(ext)s"
+    #Download playlist using Youtube-dl
+    #https://askubuntu.com/questions/694848/how-to-download-a-youtube-playlist-with-numbered-prefix-via-youtube-dl
+    playlist_folder_path = title + "\\"
+    raw_downloads_playlist_folder_path = raw_downloads_folder + playlist_folder_path
+
+    relative_dl_path = raw_downloads_playlist_folder_path + "%(playlist_index)s-%(title)s.%(ext)s"
     print("Folder to download playlist into: ", relative_dl_path)
 
     video_has_downloaded = False
@@ -113,12 +121,23 @@ def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
 
 
     #Convert all to mp3 if option specified
-    """
     if convert_all_to_mp3:
-        downloaded_filepath = root_dir + raw_downloads_folder + title + ".mp4"
-        converted_filepath = root_dir + converted_folder + title + ".mp3"
-        convert_file_to_mp3(title, downloaded_filepath, converted_filepath)
-    """
+        #https://stackoverflow.com/questions/273192/how-can-i-safely-create-a-nested-directory
+        #Create folder inside converted folder, if it doesn't already exist
+        converted_playlist_folder_path = converted_folder + playlist_folder_path
+        Path(converted_playlist_folder_path).mkdir(parents=True, exist_ok=True)
+
+
+        #Get titles of all videos in playlist folder inside raw_downloads
+        foundfiles = [str(f) for f in listdir(raw_downloads_playlist_folder_path) if isfile(join(raw_downloads_playlist_folder_path, f))]
+        filenames = [f[:f.find(".mp4")] for f in foundfiles]
+
+        #Convert each mp4 from raw_downloads/<playlist_name> --> to an mp3 in converted/<playlist_name>
+        for filename in filenames:
+            downloaded_filepath = root_dir + raw_downloads_playlist_folder_path + filename + ".mp4"
+            converted_filepath = root_dir + converted_playlist_folder_path + filename + ".mp3"
+            convert_file_to_mp3(title, downloaded_filepath, converted_filepath)
+
 
 
 def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
@@ -149,4 +168,4 @@ if __name__ == "__main__":
     #download_youtube_video(url, convert_to_mp3=True)
 
     playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
-    download_youtube_playlist(playlist_url)
+    download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
