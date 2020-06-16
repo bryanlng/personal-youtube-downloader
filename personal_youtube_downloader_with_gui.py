@@ -41,7 +41,6 @@ def convert_file_to_mp3(videoname, downloaded_filepath, converted_filepath):
 
 
 
-
 def get_yt_title(url):
     """
         https://stackoverflow.com/questions/5041008/how-to-find-elements-by-class
@@ -67,6 +66,15 @@ def get_title_of_youtube_video_bs4(url):
         found_title = (title != "YouTube")      #If title of Youtube video == "Youtube", then there was an error, so try again
 
     return title
+
+
+def get_filenames_of_files_in_directory(directory_filepath):
+    return [str(f) for f in listdir(directory_filepath) if isfile(join(directory_filepath, f))]
+
+
+def get_filenames_of_mp4_files_in_directory(directory_filepath):
+    return [f[:f.find(".mp4")] for f in get_filenames_of_files_in_directory(directory_filepath)]
+
 
 
 
@@ -129,10 +137,8 @@ def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
         converted_playlist_folder_path = converted_folder + playlist_folder_path
         Path(converted_playlist_folder_path).mkdir(parents=True, exist_ok=True)
 
-
         #Get titles of all videos in playlist folder inside raw_downloads
-        foundfiles = [str(f) for f in listdir(raw_downloads_playlist_folder_path) if isfile(join(raw_downloads_playlist_folder_path, f))]
-        filenames = [f[:f.find(".mp4")] for f in foundfiles]
+        filenames = get_filenames_of_mp4_files_in_directory(raw_downloads_playlist_folder_path)
 
         #Convert each mp4 from raw_downloads/<playlist_name> --> to an mp3 in converted/<playlist_name>
         for filename in filenames:
