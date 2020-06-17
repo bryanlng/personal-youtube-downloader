@@ -106,7 +106,7 @@ def download_video_using_youtube_dl(title, url, path):
         subprocess.run(["youtube-dl", "--verbose", "-f", 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best', url, "-o", path])
     except Exception as e:
         print(e)
-        print("\n\nFAIL: Downloading song %s with url %s" % (songname, url))
+        print("\n\nFAIL: Downloading video %s with url %s" % (title, url))
         download_successful = False
 
     return download_successful
@@ -159,7 +159,7 @@ def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
         subprocess.run(["youtube-dl", "--verbose", "-i", "-f", 'mp4', "--yes-playlist", playlist_url, "-o", youtube_dl_path])
     except Exception as e:
         print(e)
-        print("\n\nFAIL: Downloading song %s with url %s" % (songname, playlist_url))
+        print("\n\nFAIL: Downloading playlist %s with url %s" % (title, playlist_url))
         download_successful = False
 
     return download_successful
@@ -176,11 +176,18 @@ def download(url, is_playlist=False, convert_to_mp3=False):
 
 
 if __name__ == "__main__":
-    #url = "https://www.youtube.com/watch?v=2XGYr9_BiEU"     #ep 1
+    url = "https://www.youtube.com/watch?v=2XGYr9_BiEU"     #ep 1
     #url = "https://www.youtube.com/watch?v=9EceEemWo0k"     #ep 3
     #url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"     #test
     #url = "https://www.youtube.com/watch?v=lRXDeMBfvMk"
     #download_youtube_video(url, convert_to_mp3=True)
 
-    playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
-    download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
+    """
+        Python GUI stuff
+        https://realpython.com/python-gui-tkinter/
+        https://blog.resellerclub.com/the-6-best-python-gui-frameworks-for-developers/
+        https://dev.to/codesharedot/best-python-framework-for-building-a-desktop-application-and-gui-58n5
+        https://medium.com/teamresellerclub/the-6-best-python-gui-frameworks-for-developers-7a3f1a41ac73
+    """
+    #playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
+    #download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
