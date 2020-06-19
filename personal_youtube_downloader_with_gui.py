@@ -50,9 +50,16 @@ from pathlib import Path
     Tutorial:
     https://www.learnpyqt.com/courses/qt-creator/first-steps-qt-creator/
 
+    On button click stuff:
+    https://stackoverflow.com/questions/18041876/how-to-define-an-onclick-event-handler-for-a-button-from-within-qt-creator
+    Uses signals, slots,
+    https://doc.qt.io/qt-5/signalsandslots.html
+
+    Slot = function it calls()
+
     Turn pyqt script (.py) --> executable
     https://stackoverflow.com/questions/5888870/how-do-i-compile-a-pyqt-script-py-to-a-single-standalone-executable-file-for
-    
+
 """
 
 
