@@ -23,6 +23,36 @@ from pathlib import Path
     2a. Download a playlist
     2b. Download a playlist, and convert all videos to audio
     3. Can queue up multiple ones
+
+
+
+    Python GUI stuff
+    https://realpython.com/python-gui-tkinter/
+    https://blog.resellerclub.com/the-6-best-python-gui-frameworks-for-developers/
+    https://dev.to/codesharedot/best-python-framework-for-building-a-desktop-application-and-gui-58n5
+    https://medium.com/teamresellerclub/the-6-best-python-gui-frameworks-for-developers-7a3f1a41ac73
+
+    Reddit links:
+    https://www.reddit.com/r/Python/comments/a9t69r/what_is_your_goto_fast_and_quick_python_gui/
+    https://www.reddit.com/r/learnpython/comments/8v3d0d/what_is_the_best_gui_for_python/
+    https://www.reddit.com/r/learnpython/comments/5s9al6/creating_a_gui_in_python/
+
+    GUI Builders:
+    https://softwarerecs.stackexchange.com/questions/32612/gui-drag-drop-style-gui-builder-for-python-tkinter
+    https://www.reddit.com/r/Python/comments/acm67i/best_gui_builder_for_2019/
+
+    Using:
+    Qt Designer
+
+    Install:
+    https://build-system.fman.io/qt-designer-download
+
+    Tutorial:
+    https://www.learnpyqt.com/courses/qt-creator/first-steps-qt-creator/
+
+    Turn pyqt script (.py) --> executable
+    https://stackoverflow.com/questions/5888870/how-do-i-compile-a-pyqt-script-py-to-a-single-standalone-executable-file-for
+    
 """
 
 
@@ -180,14 +210,8 @@ if __name__ == "__main__":
     #url = "https://www.youtube.com/watch?v=9EceEemWo0k"     #ep 3
     #url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"     #test
     #url = "https://www.youtube.com/watch?v=lRXDeMBfvMk"
-    #download_youtube_video(url, convert_to_mp3=True)
+    url = "https://www.youtube.com/watch?v=OZa3HyVLimQ"
+    download_youtube_video(url, convert_to_mp3=True)
 
-    """
-        Python GUI stuff
-        https://realpython.com/python-gui-tkinter/
-        https://blog.resellerclub.com/the-6-best-python-gui-frameworks-for-developers/
-        https://dev.to/codesharedot/best-python-framework-for-building-a-desktop-application-and-gui-58n5
-        https://medium.com/teamresellerclub/the-6-best-python-gui-frameworks-for-developers-7a3f1a41ac73
-    """
     #playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
     #download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
