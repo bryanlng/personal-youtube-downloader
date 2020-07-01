@@ -9,6 +9,7 @@ import json
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
+import lxml.html
 from pathlib import Path
 
 """
@@ -83,13 +84,29 @@ def get_yt_title(url):
         https://stackoverflow.com/questions/5041008/how-to-find-elements-by-class
         https://stackoverflow.com/questions/32754229/python-and-beautifulsoup-opening-pages
         https://stackoverflow.com/questions/51233/how-can-i-retrieve-the-page-title-of-a-webpage-using-python
+
+        https://stackoverflow.com/questions/36108621/get-all-html-tags-with-beautiful-soup
+        https://stackoverflow.com/questions/36768068/get-meta-tag-content-property-with-beautifulsoup-and-python
     """
     try:
+        """
         r = requests.get(url)
         soup = BeautifulSoup(r.content, features="lxml")
+        title = soup.text
         title = str(soup.title.string)
         title = title.split(" - YouTube")[0]
         return title
+        """
+
+        #Title is in the meta tag
+        #<meta content="Hayao Miyazaki - The Essence of Humanity ^^!!" itemprop="name"/>
+        r = requests.get(url)
+        soup = BeautifulSoup(r.content, "html.parser")
+        meta_tag_with_title_inside = soup.find("meta",  itemprop="name")
+        title = meta_tag_with_title_inside["content"] if meta_tag_with_title_inside else "No meta title given"
+
+        return title
+
     except Exception as e:
         print(e)
 
@@ -100,7 +117,7 @@ def get_title_of_youtube_video_bs4(url):
     while not found_title:
         title = get_yt_title(url)
         print("Found title %s for url %s" % (title, url))
-        found_title = (title != "YouTube")      #If title of Youtube video == "Youtube", then there was an error, so try again
+        found_title = (title is not None and title != "YouTube")      #If title of Youtube video == "Youtube", then there was an error, so try again
 
     return title
 
@@ -114,11 +131,25 @@ def get_filenames_of_mp4_files_in_directory(directory_filepath):
 
 
 
+def clean_string(title):
+    """
+        Cleans up the title
+
+        Removes any:
+        1. Non-ascii (unicode) string
+        2. Certain ASCII chars that cause issues with window's file naming, such as:
+            -colon (:)
+            -
+    """
+    return title
+
 
 def download_youtube_video(url, convert_to_mp3=False):
     #Find title
     title = get_title_of_youtube_video_bs4(url)
 
+    #Clean title
+    title = clean_string(title)
 
     #Download using Youtube-dl
     relative_dl_path = raw_downloads_folder + title + ".%(ext)s"
@@ -212,13 +243,12 @@ def download(url, is_playlist=False, convert_to_mp3=False):
 
 
 
+
+
+
 if __name__ == "__main__":
-    url = "https://www.youtube.com/watch?v=2XGYr9_BiEU"     #ep 1
-    #url = "https://www.youtube.com/watch?v=9EceEemWo0k"     #ep 3
-    #url = "https://www.youtube.com/watch?v=Xy2L3dHWZkI"     #test
-    #url = "https://www.youtube.com/watch?v=lRXDeMBfvMk"
-    url = "https://www.youtube.com/watch?v=OZa3HyVLimQ"
+    url = "https://www.youtube.com/watch?v=eTq_D5aFy-M"
     download_youtube_video(url, convert_to_mp3=True)
 
-    #playlist_url = "https://www.youtube.com/playlist?list=PLv9iVPU7Da8pJveNqzttL-6VDFK1dg16-"
+    playlist_url = "https://www.youtube.com/playlist?list=PLOwRb6rgB7uXuSi9TQwpTsFLBmnF1h0k2"
     #download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
