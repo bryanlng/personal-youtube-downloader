@@ -79,7 +79,7 @@ def convert_file_to_mp3(videoname, downloaded_filepath, converted_filepath):
 
 
 
-def get_yt_title(url):
+def get_yt_title_method(url, method_type=None):
     """
         https://stackoverflow.com/questions/5041008/how-to-find-elements-by-class
         https://stackoverflow.com/questions/32754229/python-and-beautifulsoup-opening-pages
@@ -88,36 +88,61 @@ def get_yt_title(url):
         https://stackoverflow.com/questions/36108621/get-all-html-tags-with-beautiful-soup
         https://stackoverflow.com/questions/36768068/get-meta-tag-content-property-with-beautifulsoup-and-python
     """
+    title = None
+
     try:
-        """
-        r = requests.get(url)
-        soup = BeautifulSoup(r.content, features="lxml")
-        title = soup.text
-        title = str(soup.title.string)
-        title = title.split(" - YouTube")[0]
-        return title
-        """
-
-        #Title is in the meta tag
-        #<meta content="Hayao Miyazaki - The Essence of Humanity ^^!!" itemprop="name"/>
-        r = requests.get(url)
-        soup = BeautifulSoup(r.content, "html.parser")
-        meta_tag_with_title_inside = soup.find("meta",  itemprop="name")
-        title = meta_tag_with_title_inside["content"] if meta_tag_with_title_inside else "No meta title given"
-
-        return title
+        if method_type == "LXML_TITLE_SCRAPE":
+            r = requests.get(url)
+            soup = BeautifulSoup(r.content, features="lxml")
+            title = soup.text
+            title = str(soup.title.string)
+            title = title.split(" - YouTube")[0]
+        elif method_type == "BS4_META_TAG_CONTENT_SCRAPE":
+            #Title is sometimes in the meta tag
+            #<meta content="Hayao Miyazaki - The Essence of Humanity ^^!!" itemprop="name"/>
+            r = requests.get(url)
+            soup = BeautifulSoup(r.content, "html.parser")
+            meta_tag_with_title_inside = soup.find("meta",  itemprop="name")
+            title = meta_tag_with_title_inside["content"] if meta_tag_with_title_inside else "No meta title given"
 
     except Exception as e:
         print(e)
 
 
+    return title
+
+
+
 def get_title_of_youtube_video_bs4(url):
     title = None
     found_title = False
-    while not found_title:
-        title = get_yt_title(url)
-        print("Found title %s for url %s" % (title, url))
-        found_title = (title is not None and title != "YouTube")      #If title of Youtube video == "Youtube", then there was an error, so try again
+    method_counter = 0
+    method_iteration_counter = 0
+    method_iteration_timeout_limit = 10
+    methods = ["LXML_TITLE_SCRAPE", "BS4_META_TAG_CONTENT_SCRAPE"]
+
+
+    #Attempt each method
+    while not found_title and method_counter < len(methods):
+
+        current_method = methods[method_counter]
+        print("Trying method: ", current_method)
+
+        #Attempt each method 20 times
+        while not found_title and method_iteration_counter < method_iteration_timeout_limit:
+            title = get_yt_title_method(url, current_method)
+            print("Found title %s for url %s" % (title, url))
+            found_title = (title is not None and title != "YouTube")      #If title of Youtube video == "Youtube", then there was an error, so try again
+            method_iteration_counter += 1
+
+        #If we still haven't found the title, but our counter expired, go to new method, then reset it
+        if not found_title:
+            method_counter += 1
+            method_iteration_counter = 0
+
+    #If we still haven't found the title, give up and just default to "no_title_found"
+    if not found_title:
+        title = "no_title_found"
 
     return title
 
@@ -247,7 +272,7 @@ def download(url, is_playlist=False, convert_to_mp3=False):
 
 
 if __name__ == "__main__":
-    url = "https://www.youtube.com/watch?v=eTq_D5aFy-M"
+    url = "https://www.youtube.com/watch?v=vQ0XSM5LpQc"
     download_youtube_video(url, convert_to_mp3=True)
 
     playlist_url = "https://www.youtube.com/playlist?list=PLOwRb6rgB7uXuSi9TQwpTsFLBmnF1h0k2"
