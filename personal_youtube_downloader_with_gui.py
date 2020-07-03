@@ -11,6 +11,7 @@ from os.path import isfile, join
 from bs4 import BeautifulSoup
 import lxml.html
 from pathlib import Path
+import re
 
 """
     Lots of code taken from youtube downloader and converter for levi project
@@ -158,14 +159,38 @@ def get_filenames_of_mp4_files_in_directory(directory_filepath):
 
 def clean_string(title):
     """
+        https://stackoverflow.com/questions/2758921/regular-expression-that-finds-and-replaces-non-ascii-characters-with-python
+        https://support.tresorit.com/hc/en-us/articles/216114167-Fixing-invalid-characters-and-colliding-file-names
+        https://stackoverflow.com/questions/15658187/replace-all-words-from-word-list-with-another-string-in-python
+
         Cleans up the title
 
         Removes any:
         1. Non-ascii (unicode) string
         2. Certain ASCII chars that cause issues with window's file naming, such as:
-            -colon (:)
-            -
+            " (double quote), * (asterisk), < (less than), > (greater than), ? (question mark), \ (backslash), | (pipe), / (forward slash), : (colon)
+            The filename can’t end with a space or a period
+            The filename can’t contain any of the names reserved by Windows
+                CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, and LPT9
     """
+    print("Original title: ", title)
+    #1. Remove non-ascii chars
+    title = title.encode().decode('ascii', 'replace').replace(u'\ufffd', '')
+
+    #2. Remove all bad ascii chars
+    prohibited_ascii_chars = ['\"', '*', '<', '>', '?', '\\', '|', '/', ':']
+    windows_reserved_words = ["CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"]
+    prohibited_words = prohibited_ascii_chars + windows_reserved_words
+    big_regex = re.compile('|'.join(map(re.escape, prohibited_words)))
+    title = big_regex.sub("", title)
+
+    #3. Check if last char of the title is a space or period. If so, remove
+    last_char = title[-1]
+    if last_char == " " or last_char == ".":
+        title = title[:len(title)-1]
+
+
+    print("Cleaned title: ", title)
     return title
 
 
@@ -272,7 +297,7 @@ def download(url, is_playlist=False, convert_to_mp3=False):
 
 
 if __name__ == "__main__":
-    url = "https://www.youtube.com/watch?v=vQ0XSM5LpQc"
+    url = "https://www.youtube.com/watch?v=Y86uDtnn5rA"
     download_youtube_video(url, convert_to_mp3=True)
 
     playlist_url = "https://www.youtube.com/playlist?list=PLOwRb6rgB7uXuSi9TQwpTsFLBmnF1h0k2"
