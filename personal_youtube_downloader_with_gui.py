@@ -95,7 +95,6 @@ def get_yt_title_method(url, method_type=None):
         if method_type == "LXML_TITLE_SCRAPE":
             r = requests.get(url)
             soup = BeautifulSoup(r.content, features="lxml")
-            title = soup.text
             title = str(soup.title.string)
             title = title.split(" - YouTube")[0]
         elif method_type == "BS4_META_TAG_CONTENT_SCRAPE":
@@ -235,10 +234,16 @@ def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
     #Find title
     title = get_title_of_youtube_video_bs4(playlist_url)
 
+    #Clean title
+    title = clean_string(title)
+
     #Download playlist using Youtube-dl
     #https://askubuntu.com/questions/694848/how-to-download-a-youtube-playlist-with-numbered-prefix-via-youtube-dl
     playlist_folder_path = title + "\\"
     raw_downloads_playlist_folder_path = raw_downloads_folder + playlist_folder_path
+
+    #Create folder inside raw_downloads folder, if it doesn't already exist
+    Path(raw_downloads_playlist_folder_path).mkdir(parents=True, exist_ok=True)
 
     relative_dl_path = raw_downloads_playlist_folder_path + "%(playlist_index)s-%(title)s.%(ext)s"
     print("Folder to download playlist into: ", relative_dl_path)
@@ -297,8 +302,8 @@ def download(url, is_playlist=False, convert_to_mp3=False):
 
 
 if __name__ == "__main__":
-    url = "https://www.youtube.com/watch?v=Y86uDtnn5rA"
-    download_youtube_video(url, convert_to_mp3=True)
+    url = "https://www.youtube.com/watch?v=vPBirt1YhuM"
+    #download_youtube_video(url, convert_to_mp3=True)
 
     playlist_url = "https://www.youtube.com/playlist?list=PLOwRb6rgB7uXuSi9TQwpTsFLBmnF1h0k2"
-    #download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
+    download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
