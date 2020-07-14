@@ -177,7 +177,7 @@ def clean_string(title):
     title = title.encode().decode('ascii', 'replace').replace(u'\ufffd', '')
 
     #2. Remove all bad ascii chars
-    prohibited_ascii_chars = ['\"', '*', '<', '>', '?', '\\', '|', '/', ':']
+    prohibited_ascii_chars = ['\"', '*', '<', '>', '?', '\\', '|', '/', ':', '.']
     windows_reserved_words = ["CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"]
     prohibited_words = prohibited_ascii_chars + windows_reserved_words
     big_regex = re.compile('|'.join(map(re.escape, prohibited_words)))
@@ -302,8 +302,8 @@ def download(url, is_playlist=False, convert_to_mp3=False):
 
 
 if __name__ == "__main__":
-    url = "https://www.youtube.com/watch?v=vPBirt1YhuM"
-    #download_youtube_video(url, convert_to_mp3=True)
+    url = "https://www.youtube.com/watch?v=-CVpH8GDRQU"
+    download_youtube_video(url, convert_to_mp3=True)
 
     playlist_url = "https://www.youtube.com/playlist?list=PLOwRb6rgB7uXuSi9TQwpTsFLBmnF1h0k2"
-    download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
+    #download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
