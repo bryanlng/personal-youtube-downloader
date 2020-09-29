@@ -297,13 +297,26 @@ def download(url, is_playlist=False, convert_to_mp3=False):
         download_youtube_video(url, convert_to_mp3=convert_to_mp3)
 
 
+def download_list_of_videos(video_list):
+    for url in video_list:
+        download_youtube_video(url, convert_to_mp3=True)
 
-
-
+def download_list_of_playlists(playlist_list):
+    for url in playlist_list:
+        download_youtube_video(url, is_playlist=True)
 
 if __name__ == "__main__":
-    url = "https://www.youtube.com/watch?v=-CVpH8GDRQU"
-    download_youtube_video(url, convert_to_mp3=True)
+    # url = "https://www.youtube.com/watch?v=n2LxBXS4jJM"
+    # download_youtube_video(url, convert_to_mp3=True)
 
-    playlist_url = "https://www.youtube.com/playlist?list=PLOwRb6rgB7uXuSi9TQwpTsFLBmnF1h0k2"
-    #download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
+    # video_list = [
+    #     "https://www.youtube.com/watch?v=-qROib-Tn5A",
+    #     "https://www.youtube.com/watch?v=G_hO5uqJy2s"
+    # ]
+    # download_list_of_videos(video_list)
+
+    playlist_list = [
+        
+    ]
+    # playlist_url = "https://www.youtube.com/playlist?list=PL6uI9vLAChEdV-9Ctj1j5YMcDcf08GemF"
+    # download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
