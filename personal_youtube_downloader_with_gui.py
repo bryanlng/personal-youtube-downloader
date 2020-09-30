@@ -303,7 +303,7 @@ def download_list_of_videos(video_list):
 
 def download_list_of_playlists(playlist_list):
     for url in playlist_list:
-        download_youtube_video(url, is_playlist=True)
+        download_youtube_playlist(url, convert_all_to_mp3=False)
 
 if __name__ == "__main__":
     # url = "https://www.youtube.com/watch?v=n2LxBXS4jJM"
@@ -316,7 +316,10 @@ if __name__ == "__main__":
     # download_list_of_videos(video_list)
 
     playlist_list = [
-        
+        "https://www.youtube.com/playlist?list=PLMFGVXWuJ1C6PULQBv0jf1v9jn-CpWgIn",
+        "https://www.youtube.com/playlist?list=PLMFGVXWuJ1C7EUBXVT1dSstj2cGxPeek5"
     ]
+    download_list_of_playlists(playlist_list)
+
     # playlist_url = "https://www.youtube.com/playlist?list=PL6uI9vLAChEdV-9Ctj1j5YMcDcf08GemF"
     # download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
