@@ -71,7 +71,7 @@ import random
 #Directories
 # root_dir = "C:\\Users\\Bryan Leung\\Desktop\\youtube_downloaders\\personal_youtube_downloader_with_gui\\" # old path on lenovo G50 laptop
 # root_dir = "C:\\Users\\bleun\\Documents\\youtube_downloaders\\personal_youtube_downloader_with_gui\\" # old path on Lenovo flex 5 laptop
-root_dir = "C:\\Users\\bleun\\OneDrive\\Desktop\\youtube_downloaders\\personal_youtube_downloader_with_gui\\"
+root_dir = "C:\\Users\\bleun\\youtube_downloaders\\personal_youtube_downloader_with_gui\\"
 raw_downloads_folder = "raw_downloads\\"
 converted_folder = "converted\\"
 
