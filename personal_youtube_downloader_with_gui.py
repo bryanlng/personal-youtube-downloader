@@ -12,6 +12,8 @@ from bs4 import BeautifulSoup
 import lxml.html
 from pathlib import Path
 import re
+import time
+import random
 
 """
     Lots of code taken from youtube downloader and converter for levi project
@@ -67,7 +69,9 @@ import re
 
 
 #Directories
-root_dir = "C:\\Users\\Bryan Leung\\Desktop\\youtube_downloaders\\personal_youtube_downloader_with_gui\\"
+# root_dir = "C:\\Users\\Bryan Leung\\Desktop\\youtube_downloaders\\personal_youtube_downloader_with_gui\\" # old path on lenovo G50 laptop
+# root_dir = "C:\\Users\\bleun\\Documents\\youtube_downloaders\\personal_youtube_downloader_with_gui\\" # old path on Lenovo flex 5 laptop
+root_dir = "C:\\Users\\bleun\\OneDrive\\Desktop\\youtube_downloaders\\personal_youtube_downloader_with_gui\\"
 raw_downloads_folder = "raw_downloads\\"
 converted_folder = "converted\\"
 
@@ -200,7 +204,7 @@ def download_youtube_video(url, convert_to_mp3=False):
     #Clean title
     title = clean_string(title)
 
-    #Download using Youtube-dl
+    #Download using yt-dlp
     relative_dl_path = raw_downloads_folder + title + ".%(ext)s"
 
     video_has_downloaded = False
@@ -217,10 +221,11 @@ def download_youtube_video(url, convert_to_mp3=False):
 
 
 def download_video_using_youtube_dl(title, url, path):
-    print("Downloading video with title %s with url %s" % (title, url))
+    print("Downloading video with title %s with url %s at path %s" % (title, url, path))
     download_successful = True
     try:
-        subprocess.run(["youtube-dl", "--verbose", "-f", 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best', url, "-o", path])
+        # subprocess.run(["yt-dlp", "--verbose", "-f", 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best', url, "-o", path])
+        subprocess.run(["yt-dlp", "--verbose", "-f", 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',"-o", path, url])
     except Exception as e:
         print(e)
         print("\n\nFAIL: Downloading video %s with url %s" % (title, url))
@@ -237,8 +242,8 @@ def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
     #Clean title
     title = clean_string(title)
 
-    #Download playlist using Youtube-dl
-    #https://askubuntu.com/questions/694848/how-to-download-a-youtube-playlist-with-numbered-prefix-via-youtube-dl
+    #Download playlist using yt-dlp
+    #https://askubuntu.com/questions/694848/how-to-download-a-youtube-playlist-with-numbered-prefix-via-yt-dlp
     playlist_folder_path = title + "\\"
     raw_downloads_playlist_folder_path = raw_downloads_folder + playlist_folder_path
 
@@ -274,19 +279,18 @@ def download_youtube_playlist(playlist_url, convert_all_to_mp3=False):
 
 def download_playlist_using_youtube_dl(title, playlist_url, youtube_dl_path):
     """
-        https://stackoverflow.com/questions/48422377/youtube-downloading-a-playlist-youtube-dl
+        https://stackoverflow.com/questions/48422377/youtube-downloading-a-playlist-yt-dlp
     """
     print("Downloading youtube playlist with title %s with url %s" % (title, playlist_url))
     download_successful = True
     try:
-        subprocess.run(["youtube-dl", "--verbose", "-i", "-f", 'mp4', "--yes-playlist", playlist_url, "-o", youtube_dl_path])
+        subprocess.run(["yt-dlp", "--verbose", "-i", "-f", 'mp4', "--yes-playlist", "--retries", "infinite", "--limit-rate", "10000000", playlist_url, "-o", youtube_dl_path])
     except Exception as e:
         print(e)
         print("\n\nFAIL: Downloading playlist %s with url %s" % (title, playlist_url))
         download_successful = False
 
     return download_successful
-
 
 
 
@@ -300,26 +304,30 @@ def download(url, is_playlist=False, convert_to_mp3=False):
 def download_list_of_videos(video_list):
     for url in video_list:
         download_youtube_video(url, convert_to_mp3=True)
+        sleep(30, 20)
+
 
 def download_list_of_playlists(playlist_list):
     for url in playlist_list:
         download_youtube_playlist(url, convert_all_to_mp3=False)
 
+def sleep(base, range):
+    time_to_sleep = base + random.randit(0, range)
+    time.sleep(time_to_sleep)
+
 if __name__ == "__main__":
-    # url = "https://www.youtube.com/watch?v=n2LxBXS4jJM"
+    # url = "https://www.youtube.com/watch?v=o__NzkmLZoM"
     # download_youtube_video(url, convert_to_mp3=True)
 
     # video_list = [
-    #     "https://www.youtube.com/watch?v=-qROib-Tn5A",
-    #     "https://www.youtube.com/watch?v=G_hO5uqJy2s"
+    #     "https://www.youtube.com/watch?v=KsJ840J2iSY"
     # ]
     # download_list_of_videos(video_list)
 
-    playlist_list = [
-        "https://www.youtube.com/playlist?list=PLMFGVXWuJ1C6PULQBv0jf1v9jn-CpWgIn",
-        "https://www.youtube.com/playlist?list=PLMFGVXWuJ1C7EUBXVT1dSstj2cGxPeek5"
-    ]
-    download_list_of_playlists(playlist_list)
+    # playlist_list = [
+    #     "https://www.youtube.com/playlist?list=PLMFGVXWuJ1C5JrEgn8FwS8rgDHvcgNsMS"
+    # ]
+    # download_list_of_playlists(playlist_list)
 
-    # playlist_url = "https://www.youtube.com/playlist?list=PL6uI9vLAChEdV-9Ctj1j5YMcDcf08GemF"
-    # download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
+    playlist_url = "https://www.youtube.com/playlist?list=PLSaKzxcdPI4b12BxTxg4ux-xXMz6KW5vq"
+    download_youtube_playlist(playlist_url, convert_all_to_mp3=True)
